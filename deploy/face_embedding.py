@@ -6,7 +6,6 @@ from scipy import misc
 import sys
 import os
 import argparse
-import tensorflow as tf
 import numpy as np
 import mxnet as mx
 import random

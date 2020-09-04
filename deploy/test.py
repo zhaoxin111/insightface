@@ -20,6 +20,8 @@ img = cv2.imread('Tom_Hanks_54745.png')
 img = model.get_input(img)
 #f1 = model.get_feature(img)
 #print(f1[0:10])
+
+'''
 gender, age = model.get_ga(img)
 print(gender)
 print(age)
@@ -32,3 +34,4 @@ sim = np.dot(f1, f2.T)
 print(sim)
 #diff = np.subtract(source_feature, target_feature)
 #dist = np.sum(np.square(diff),1)
+'''
