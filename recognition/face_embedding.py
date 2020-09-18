@@ -5,9 +5,12 @@ import numpy as np
 import cv2
 from sklearn import preprocessing
 import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+import os
+os.environ['CUDA_VISIBLE_DEVICES']='2'
 
 device=0
-model_path = '/home/zhaoxin/workspace/face/insightface/models/model-r100-arcface-ms1m-refine-v2/model,0'
+model_path = '/home/zhaoxin/workspace/face/insightface/models/model,0'
 image_shape = [112,112]
 batch_size = 1
 
@@ -44,6 +47,8 @@ def get_embeddings(img_paths):
         data = mx.nd.array(img)
         db = mx.io.DataBatch(data=(data,))
         model.forward(db, is_train=False)
+        # print(model.get_outputs()[0].shape)
+        # print(model.get_outputs()[0])
         embedding = model.get_outputs()[0].asnumpy()
         embedding = preprocessing.normalize(embedding).flatten()
         # embedding = embedding.flatten()
@@ -55,5 +60,8 @@ if __name__ == "__main__":
     embeddings = get_embeddings(img_paths)
     dists = [[cos(e1,e2) for e2 in embeddings] for e1 in embeddings]
     print(pd.DataFrame(dists))
+    # sim = cosine_similarity(embeddings)
+    # print(sim)
+    
 
 
