@@ -18,6 +18,7 @@ from mxnet import ndarray as nd
 import argparse
 import mxnet.optimizer as optimizer
 from config import config, default, generate_config
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 import verification
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'symbol'))
 import fresnet
@@ -194,7 +195,12 @@ def train_net(args):
       esym = get_symbol_embedding()
       asym = get_symbol_arcface
     else:
-      assert False
+      # assert False
+      print('loading', args.pretrained, args.pretrained_epoch)
+      _, arg_params, aux_params = mx.model.load_checkpoint(args.pretrained, args.pretrained_epoch)
+      # import pdb; pdb.set_trace()
+      esym = get_symbol_embedding()
+      asym = get_symbol_arcface
 
     if config.num_workers==1:
       from parall_module_local_v1 import ParallModule
@@ -209,6 +215,7 @@ def train_net(args):
         asymbol       = asym,
         args = args,
     )
+    
     val_dataiter = None
     train_dataiter = FaceImageIter(
         batch_size           = args.batch_size,
@@ -318,13 +325,20 @@ def train_net(args):
           all_layers = model.symbol.get_internals()
           _sym = all_layers['fc1_output']
           mx.model.save_checkpoint(prefix, msave, _sym, arg, aux)
+        # always save model 
+        arg, aux = model.get_params()
+        all_layers = model.symbol.get_internals()
+        _sym = all_layers['fc1_output']
+        _prefix_latest = os.path.join(args.models_root, '%s-%s-%s'%(args.network, args.loss, args.dataset), 'latest_model')
+        mx.model.save_checkpoint(_prefix_latest, msave, _sym, arg, aux)
+
         print('[%d]Accuracy-Highest: %1.5f'%(mbatch, highest_acc[-1]))
       if config.max_steps>0 and mbatch>config.max_steps:
         sys.exit(0)
 
     epoch_cb = None
     train_dataiter = mx.io.PrefetchingIter(train_dataiter)
-
+    # import pdb; pdb.set_trace()
     model.fit(train_dataiter,
         begin_epoch        = begin_epoch,
         num_epoch          = 999999,

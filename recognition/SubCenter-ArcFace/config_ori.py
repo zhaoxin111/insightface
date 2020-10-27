@@ -7,7 +7,7 @@ config = edict()
 config.bn_mom = 0.9
 config.workspace = 256
 config.emb_size = 512
-config.ckpt_embedding = True
+config.ckpt_embedding = False
 config.net_se = 0
 config.net_act = 'prelu'
 config.net_unit = 3
@@ -117,10 +117,10 @@ dataset = edict()
 
 dataset.emore = edict()
 dataset.emore.dataset = 'emore'
-dataset.emore.dataset_path = '../datasets/faces_emore'
-dataset.emore.num_classes = 85742
+dataset.emore.dataset_path = '../datasets/insightface_data'
+dataset.emore.num_classes = 91689
 dataset.emore.image_shape = (112,112,3)
-dataset.emore.val_targets = ['lfw', 'cfp_fp', 'agedb_30']
+dataset.emore.val_targets = ['agedb_30']
 
 dataset.retina = edict()
 dataset.retina.dataset = 'retina'
@@ -183,7 +183,8 @@ loss.atriplet.lr = 0.05
 default = edict()
 
 # default network
-default.network = 'r100'
+default.network = 'r50'
+# default.pretrained = '/home/zhaoxin/workspace/face/insightface/recognition/SubCenter-ArcFace/models/r50-arcface-emore/model'
 default.pretrained = ''
 default.pretrained_epoch = 1
 # default dataset
@@ -193,14 +194,14 @@ default.frequent = 20
 default.verbose = 2000
 default.kvstore = 'device'
 
-default.end_epoch = 10000
+default.end_epoch = 30
 default.lr = 0.1
 default.wd = 0.0005
 default.mom = 0.9
-default.per_batch_size = 128
+default.per_batch_size = 100
 default.ckpt = 3
-default.lr_steps = '100000,160000,220000'
-default.models_root = './models'
+default.lr_steps = '64000,114000,164000'
+default.models_root = './drop_models'
 
 
 def generate_config(_network, _dataset, _loss):
@@ -222,3 +223,4 @@ def generate_config(_network, _dataset, _loss):
     config.num_workers = 1
     if 'DMLC_NUM_WORKER' in os.environ:
       config.num_workers = int(os.environ['DMLC_NUM_WORKER'])
+

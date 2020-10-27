@@ -107,7 +107,7 @@ def main(args):
           W = np.concatenate( (W, _W), axis=0 )
   K = args.k
   W = sklearn.preprocessing.normalize(W)
-  W = W.reshape( (-1, K, 512) )
+  W = W.reshape( (-1, K, 512) )  # (91690, 3, 512)???
   all_layers = sym.get_internals()
   sym = all_layers['fc1_output']
   model = mx.mod.Module(symbol=sym, context=ctx, label_names = None)
@@ -119,7 +119,7 @@ def main(args):
   imgrec = mx.recordio.MXIndexedRecordIO(path_imgidx, path_imgrec, 'r')  # pylint: disable=redefined-variable-type
   id_list = []
   s = imgrec.read_idx(0)
-  header, _ = mx.recordio.unpack(s)
+  header, _ = mx.recordio.unpack(s)  # HEADER(flag=2, label=array([3986320., 4078009.], dtype=float32), id=0, id2=0)
   assert header.flag>0
   print('header0 label', header.label)
   header0 = (int(header.label[0]), int(header.label[1]))
@@ -127,7 +127,7 @@ def main(args):
   imgidx = range(1, int(header.label[0]))
   id2range = {}
   a, b = int(header.label[0]), int(header.label[1])
-  seq_identity = range(a,b)
+  seq_identity = range(a,b)  # range(3986320, 4078009)
   print(len(seq_identity))
   image_count = 0
   pp=0
@@ -174,12 +174,24 @@ def main(args):
     num_drop = x.shape[0] - len(idx)
     if len(idx)==0:
         continue
-    #print("labelid %d dropped %d, from %d to %d"% (wid, num_drop, x.shape[0], len(idx)))
+    print("labelid %d dropped %d, from %d to %d"% (wid, num_drop, x.shape[0], len(idx)))
     num_images += len(idx)
     for _idx in idx:
         c = contents[_idx]
         builder.add(label, c, is_image=False)
     label+=1
+
+    # save droped imgs
+    drop_idx = np.where(sim<=cos_thresh)[0]
+    if len(drop_idx)!=0:
+      for _idx in drop_idx:
+        img = contents[_idx]
+        img = mx.image.imdecode(img).asnumpy()
+        img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
+        root = '/home/zhaoxin/workspace/face/insightface/recognition/datasets/insightface_data/droped_imgs_{}/{}'.format(args.threshold,wid)
+        if not os.path.exists(root):
+          os.makedirs(root)
+        cv2.imwrite(os.path.join(root,'{}.jpg'.format(_idx)),img)
   builder.close()
 
   print('total:', num_images)

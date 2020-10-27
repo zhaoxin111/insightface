@@ -1,4 +1,3 @@
-
 '''
 @author: insightface
 '''
@@ -402,10 +401,8 @@ class ParallModule(BaseModule):
             force_rebind=False, force_init=False, begin_epoch=0, num_epoch=None,
             validation_metric=None, monitor=None, sparse_row_id_fn=None):
         """Trains the module parameters.
-
         Checkout `Module Tutorial <http://mxnet.io/tutorials/basic/module.html>`_ to see
         a end-to-end use-case.
-
         Parameters
         ----------
         train_data : DataIter
@@ -467,7 +464,6 @@ class ParallModule(BaseModule):
             str -> NDArray. The resulting dict is used for pulling row_sparse
             parameters from the kvstore, where the str key is the name of the param,
             and the value is the row id of the param to pull.
-
         Examples
         --------
         >>> # An example of using fit for training.
@@ -480,7 +476,8 @@ class ParallModule(BaseModule):
         ...     eval_metric='acc', num_epoch=10, begin_epoch=3)
         """
         assert num_epoch is not None, 'please specify number of epochs'
-        assert arg_params is None and aux_params is None
+        # import pdb; pdb.set_trace()
+        # assert arg_params is None and aux_params is None
 
         self.bind(data_shapes=train_data.provide_data, label_shapes=train_data.provide_label,
                   for_training=True, force_rebind=force_rebind)
@@ -567,4 +564,3 @@ class ParallModule(BaseModule):
 
             # end of 1 epoch, reset the data-iter for another epoch
             train_data.reset()
-
