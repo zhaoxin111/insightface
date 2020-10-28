@@ -40,7 +40,8 @@ class MarginSoftmax(nn.Module):
 
 
 # .......
-def main(local_rank, world_size, init_method='tcp://127.0.0.1:23499'):
+def main(local_rank, world_size,init_method='tcp://127.0.0.1:23499'):
+    
     dist.init_process_group(backend='nccl', init_method=init_method, rank=local_rank, world_size=world_size)
     cfg.local_rank = local_rank
     torch.cuda.set_device(local_rank)
@@ -79,15 +80,21 @@ def main(local_rank, world_size, init_method='tcp://127.0.0.1:23499'):
     optimizer = SGD([
         {'params': backbone.parameters()},
         {'params': dist_sample_classifer.parameters()}
-    ], lr=0.1, momentum=0.9, weight_decay=cfg.weight_decay, rescale=world_size)
+    ], lr=cfg.lr, momentum=cfg.momentum, weight_decay=cfg.weight_decay, rescale=world_size)
 
     # Lr scheduler
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=cfg.lr_func)
     n_epochs = cfg.num_epoch
     start_epoch = 0
 
+    output_folder = cfg.output_folder
+    if dist.get_rank() == 0:
+        import os
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+    
     if local_rank == 0:
-        writer = SummaryWriter(log_dir='logs/shows')
+        writer = SummaryWriter(log_dir=os.path.join(output_folder, 'logs'))
 
     global_step = 0
     for epoch in range(start_epoch, n_epochs):
@@ -159,9 +166,10 @@ def main(local_rank, world_size, init_method='tcp://127.0.0.1:23499'):
         scheduler.step()
         if dist.get_rank() == 0:
             import os
-            if not os.path.exists('models'):
-                os.makedirs('models')
-            torch.save(backbone.module.state_dict(), "models/" + str(epoch) + 'backbone.pth')
+            model_folder = os.path.join(output_folder,'models')
+            if not os.path.exists(model_folder):
+                os.makedirs(model_folder)
+            torch.save(backbone.module.state_dict(), os.path.join(model_folder,'r100_glint360k_epoch{}.pth'.format(epoch)))
     dist.destroy_process_group()
 
 

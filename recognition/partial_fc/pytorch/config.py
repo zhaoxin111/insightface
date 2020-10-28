@@ -9,10 +9,11 @@ config.momentum = 0.9
 config.weight_decay = 5e-4
 config.batch_size = 64
 config.lr = 0.1
+config.output_folder = '/home/zhaoxin/exp_results/r100_glint360k'
 
 if config.dataset == "emore":
-    config.rec = "/train_tmp/faces_emore"
-    config.num_classes = 85742
+    config.rec = "/home/zhaoxin/datasets/glint360k/glint360k/"
+    config.num_classes = 360232
     config.num_epoch = 20
 
 
