@@ -4,7 +4,7 @@ starttime=`date +'%Y-%m-%d %H:%M:%S'`
 
 
 # /usr/bin/
-CUDA_VISIBLE_DEVICES=4,5,6,7 python -m torch.distributed.launch --nproc_per_node=4 partial_fc.py --world_size=4 | tee hist.log
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python -m torch.distributed.launch --nproc_per_node=8 partial_fc.py --world_size=8 | tee hist.log
 
 
 endtime=`date +'%Y-%m-%d %H:%M:%S'`

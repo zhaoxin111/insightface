@@ -87,7 +87,7 @@ def main(local_rank, world_size,init_method='tcp://127.0.0.1:23499'):
     n_epochs = cfg.num_epoch
     start_epoch = 0
 
-    output_folder = cfg.output
+    output_folder = cfg.output_folder
     if dist.get_rank() == 0:
         import os
         if not os.path.exists(output_folder):

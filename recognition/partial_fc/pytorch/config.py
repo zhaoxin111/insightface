@@ -7,14 +7,14 @@ config.sample_rate = 1.0
 config.fp16 = False
 config.momentum = 0.9
 config.weight_decay = 5e-4
-config.batch_size = 60
-config.lr = 0.05
-config.output = '/data/zhaoxin_data/renren_filtered_data_v3/'
+config.batch_size = 64
+config.lr = 0.1
+config.output_folder = '/home/zhaoxin/exp_results/r100_glint360k'
 
 if config.dataset == "emore":
-    config.rec = '/data/zhaoxin_data/renren_filtered_data_v3/'
-    config.num_classes = 142199
-    config.num_epoch = 30
+    config.rec = "/home/zhaoxin/datasets/glint360k/glint360k/"
+    config.num_classes = 360232
+    config.num_epoch = 20
 
 
     def lr_step_func(epoch):
