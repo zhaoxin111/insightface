@@ -182,23 +182,20 @@ def main(args):
     label+=1
 
     # save droped imgs
-    drop_idx = np.where(sim<=cos_thresh)[0]
-    if len(drop_idx)!=0:
-      for _idx in drop_idx:
-        img = contents[_idx]
-        img = mx.image.imdecode(img).asnumpy()
-        img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
-        root = '/home/zhaoxin/workspace/face/insightface/recognition/datasets/insightface_data/droped_imgs_{}/{}'.format(args.threshold,wid)
-        if not os.path.exists(root):
-          os.makedirs(root)
-        cv2.imwrite(os.path.join(root,'{}.jpg'.format(_idx)),img)
+    # drop_idx = np.where(sim<=cos_thresh)[0]
+    # if len(drop_idx)!=0:
+    #   for _idx in drop_idx:
+    #     img = contents[_idx]
+    #     img = mx.image.imdecode(img).asnumpy()
+    #     img = cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
+    #     root = '/home/zhaoxin/workspace/face/insightface/recognition/datasets/insightface_data/droped_imgs_{}/{}'.format(args.threshold,wid)
+    #     if not os.path.exists(root):
+    #       os.makedirs(root)
+    #     cv2.imwrite(os.path.join(root,'{}.jpg'.format(_idx)),img)
   builder.close()
 
   print('total:', num_images)
   
-
-
-
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='')

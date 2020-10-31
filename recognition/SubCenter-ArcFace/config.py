@@ -184,8 +184,8 @@ default = edict()
 
 # default network
 default.network = 'r50'
-default.pretrained = '/home/zhaoxin/workspace/face/insightface/recognition/SubCenter-ArcFace/models/r50-arcface-emore/latest_model'
-# default.pretrained = ''
+# default.pretrained = '/home/zhaoxin/workspace/face/insightface/recognition/SubCenter-ArcFace/models/r50-arcface-emore/latest_model'
+default.pretrained = ''
 default.pretrained_epoch = 1
 # default dataset
 default.dataset = 'emore'
